@@ -5,6 +5,11 @@
       "source": "anthropics/skills",
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "frontend-developer-skill": {
+      "source": "404kidwiz/claude-supercode-skills",
+      "sourceType": "github",
+      "computedHash": "634f7798d91fb9d350fccd4b91ae6138acfebf7dd2902ee4512582c6a40119a9"
     }
   }
 }

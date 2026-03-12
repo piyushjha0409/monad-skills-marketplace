@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Navbar } from "@/components/layout/navbar";
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
@@ -27,14 +27,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark overflow-hidden">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh overflow-hidden`}
       >
         <TooltipProvider>
-          <div className="flex h-screen flex-col overflow-hidden">
-            <Navbar />
-            <main className="flex-1 overflow-auto">{children}</main>
+          <div className="h-dvh overflow-hidden">
+            <main className="h-full">{children}</main>
           </div>
           <Toaster />
         </TooltipProvider>
