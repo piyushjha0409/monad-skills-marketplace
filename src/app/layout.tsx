@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Blitz Skills - Hackathon Skills Marketplace",
+  title: "Monad Skills Marketplace",
   description:
-    "Find your perfect hackathon team. Post your skills, discover talented builders, and form the ultimate team at Blitz.",
+    "Skill templates for AI coding agents building on Monad. Browse, download, and start building.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh overflow-hidden`}
       >

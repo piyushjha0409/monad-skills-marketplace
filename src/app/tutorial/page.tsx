@@ -13,60 +13,56 @@ const SECTIONS = [
 
 export default function TutorialPage() {
   const [showTop, setShowTop] = useState(false);
-  const [activeSection, setActiveSection] = useState("structure");
+  const [active, setActive] = useState("structure");
 
   useEffect(() => {
-    const container = document.getElementById("tutorial-scroll");
-    if (!container) return;
+    const el = document.getElementById("tutorial-scroll");
+    if (!el) return;
 
     function onScroll() {
-      setShowTop(container!.scrollTop > 300);
-
-      // Update active section based on scroll position
-      for (const section of [...SECTIONS].reverse()) {
-        const el = document.getElementById(section.id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top <= 120) {
-            setActiveSection(section.id);
-            break;
-          }
+      setShowTop(el!.scrollTop > 300);
+      for (const s of [...SECTIONS].reverse()) {
+        const target = document.getElementById(s.id);
+        if (target && target.getBoundingClientRect().top <= 120) {
+          setActive(s.id);
+          break;
         }
       }
     }
 
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  function scrollToTop() {
-    document.getElementById("tutorial-scroll")?.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
   return (
-    <div id="tutorial-scroll" className="h-full overflow-auto bg-[#0a0a0b]">
-      {/* #5 Sticky section nav */}
-      <div className="sticky top-0 z-20 border-b border-white/[0.05] bg-[#0a0a0b]/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-2xl items-center gap-1 px-5 py-2.5 sm:px-8 lg:max-w-3xl lg:px-12">
+    <div id="tutorial-scroll" className="h-full overflow-auto bg-white">
+      {/* Animated grid */}
+      <div className="pointer-events-none fixed inset-0">
+        <div className="bg-grid bg-grid-fade absolute inset-0" />
+        <div className="bg-grid-dots bg-grid-fade absolute inset-0" />
+      </div>
+
+      {/* Sticky nav */}
+      <nav className="sticky top-0 z-20 border-b border-gray-100 bg-white/90 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-2xl items-center px-5 py-3 sm:px-8 lg:max-w-3xl">
           <Link
             href="/browse"
-            className="mr-3 flex items-center gap-1.5 text-xs text-white/30 transition-colors hover:text-white/50 sm:text-sm"
+            className="mr-4 text-gray-400 transition-colors hover:text-purple-500"
           >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="hidden sm:inline">Back</span>
           </Link>
-          <div className="h-4 w-px bg-white/[0.08]" />
-          <div className="flex items-center gap-0.5 overflow-x-auto pl-2 sm:gap-1">
+          <div className="h-4 w-px bg-gray-100" />
+          <div className="flex gap-1 overflow-x-auto pl-3">
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors sm:text-xs ${
-                  activeSection === s.id
-                    ? "bg-purple-500/15 text-purple-400/90"
-                    : "text-white/30 hover:bg-white/[0.04] hover:text-white/50"
+                className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold transition-all sm:text-xs ${
+                  active === s.id
+                    ? "bg-purple-100 text-purple-700"
+                    : "text-gray-400 hover:bg-purple-50 hover:text-purple-600"
                 }`}
               >
                 {s.label}
@@ -74,71 +70,47 @@ export default function TutorialPage() {
             ))}
           </div>
         </div>
-      </div>
+      </nav>
 
-      <div className="px-5 py-8 sm:px-8 sm:py-14">
+      <div className="relative px-5 py-10 sm:px-8 sm:py-16">
         <article className="mx-auto max-w-2xl lg:max-w-3xl">
-          <h1 className="text-xl font-semibold tracking-[-0.01em] text-white sm:text-2xl md:text-3xl">
+          <h1 className="text-xl font-bold tracking-[-0.02em] text-gray-900 sm:text-2xl md:text-[1.75rem]">
             How to create a skill folder
           </h1>
 
-          <p className="mt-3 text-sm leading-relaxed text-white/45 sm:mt-4 sm:text-base">
-            Each skill is a <strong className="text-white/70">folder</strong> containing{" "}
-            <code className="rounded bg-white/[0.06] px-1.5 py-0.5 text-xs text-purple-400/80 sm:text-sm">SKILL.md</code>{" "}
-            and{" "}
-            <code className="rounded bg-white/[0.06] px-1.5 py-0.5 text-xs text-purple-400/80 sm:text-sm">README.md</code>.
-            This follows the open SKILL.md standard used by Claude Code, Codex,
-            and other agent platforms.
+          <p className="mt-4 text-sm leading-[1.7] text-gray-500 sm:text-base">
+            Each skill is a <strong className="text-gray-800">folder</strong> with{" "}
+            <Code>SKILL.md</Code> and <Code>README.md</Code>.
+            Compatible with Claude Code, Codex, and other agent platforms.
           </p>
 
-          {/* Divider */}
-          <div className="mt-8 h-px bg-white/[0.06] sm:mt-10" />
+          <div className="mt-10 h-px bg-gray-100 sm:mt-12" />
 
           {/* Step 1 */}
-          <section id="structure" className="scroll-mt-16 mt-8 sm:mt-10">
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-purple-500/[0.1] text-xs font-medium text-purple-400/80 sm:h-7 sm:w-7">
-                1
-              </span>
-              <h2 className="text-base font-medium text-white/90 sm:text-lg">
-                Folder structure
-              </h2>
-            </div>
-            <p className="mt-3 text-sm text-white/40 sm:text-[0.9rem]">
+          <section id="structure" className="scroll-mt-16 mt-10 sm:mt-12">
+            <StepHeader num={1} title="Folder structure" />
+            <p className="mt-4 text-sm text-gray-500 sm:text-[0.9rem]">
               Create a folder for your skill inside your project&apos;s skills directory.
             </p>
-            <pre className="mt-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 font-mono text-xs leading-relaxed text-white/60 overflow-x-auto sm:p-4 sm:text-sm">
-              <code>{`your-project/
+            <CodeBlock>{`your-project/
 └── skills/
     └── solidity-developer/
         ├── SKILL.md      # Required — metadata + agent instructions
-        └── README.md     # Human-readable description`}</code>
-            </pre>
+        └── README.md     # Human-readable description`}</CodeBlock>
           </section>
 
           {/* Step 2 */}
-          <section id="skill-md" className="scroll-mt-16 mt-10 sm:mt-12">
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-purple-500/[0.1] text-xs font-medium text-purple-400/80 sm:h-7 sm:w-7">
-                2
-              </span>
-              <h2 className="text-base font-medium text-white/90 sm:text-lg">
-                Create SKILL.md
-              </h2>
-            </div>
-            <p className="mt-3 text-sm text-white/40 sm:text-[0.9rem]">
-              The SKILL.md file has two parts: YAML frontmatter (metadata) and a
-              markdown body (instructions for the agent).
+          <section id="skill-md" className="scroll-mt-16 mt-12 sm:mt-14">
+            <StepHeader num={2} title="Create SKILL.md" />
+            <p className="mt-4 text-sm text-gray-500 sm:text-[0.9rem]">
+              Two parts: YAML frontmatter (metadata) and a markdown body (agent instructions).
             </p>
 
-            <h3 className="mt-5 text-sm font-medium text-white/60 sm:mt-6 sm:text-[0.9rem]">Frontmatter</h3>
-            <p className="mt-1.5 text-sm text-white/35 sm:text-[0.85rem]">
-              Between <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">---</code> delimiters.
-              Required: <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">name</code> (lowercase + hyphens, max 64 chars) and{" "}
-              <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">description</code> (max 1024 chars).
+            <h3 className="mt-6 text-sm font-semibold text-gray-700 sm:text-[0.9rem]">Frontmatter</h3>
+            <p className="mt-1.5 text-sm text-gray-400">
+              <Code>name</Code> (lowercase, hyphens) and <Code>description</Code> (max 1024 chars) are required.
             </p>
-            <pre className="mt-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 font-mono text-xs leading-relaxed text-white/60 overflow-x-auto sm:p-4 sm:text-sm">
-              <code>{`---
+            <CodeBlock>{`---
 name: solidity-developer
 description: Skill for agents building smart contracts on Monad and EVM chains.
 skills:
@@ -148,135 +120,127 @@ skills:
   - Hardhat
   - OpenZeppelin
   - EVM
----`}</code>
-            </pre>
+---`}</CodeBlock>
 
-            <h3 className="mt-5 text-sm font-medium text-white/60 sm:mt-6 sm:text-[0.9rem]">Body (Instructions)</h3>
-            <p className="mt-1.5 text-sm text-white/35 sm:text-[0.85rem]">
-              Below the frontmatter, write the instructions your agent should follow.
-              Include &quot;When to Use&quot; and &quot;When NOT to Use&quot; sections.
+            <h3 className="mt-6 text-sm font-semibold text-gray-700 sm:text-[0.9rem]">Body</h3>
+            <p className="mt-1.5 text-sm text-gray-400">
+              Instructions the agent should follow. Include when to use and when not to.
             </p>
-            <pre className="mt-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 font-mono text-xs leading-relaxed text-white/60 overflow-x-auto sm:p-4 sm:text-sm">
-              <code>{`## Instructions
+            <CodeBlock>{`## Instructions
 
 You are a Solidity smart contract developer agent specializing
 in EVM-compatible chains, with deep expertise in Monad.
 
 ### Core Capabilities
 
-- **Smart contract development** — Solidity 0.8+, ERC standards,
-  upgradeable proxies (UUPS, Transparent)
+- **Smart contract development** — Solidity 0.8+, ERC standards
 - **Testing & tooling** — Foundry, Hardhat, fuzz/invariant testing
 - **Security** — Reentrancy, access control, OpenZeppelin, Slither
 - **Gas optimization** — Storage packing, Yul, batch operations
 
 ### When to Use
 
-Use when writing, auditing, testing, or deploying Solidity
-smart contracts on Monad or other EVM chains.
+Writing, auditing, testing, or deploying Solidity contracts.
 
 ### When NOT to Use
 
-Do not use for frontend, backend APIs, or tasks unrelated
-to on-chain smart contract work.`}</code>
-            </pre>
+Frontend, backend APIs, or non-contract work.`}</CodeBlock>
           </section>
 
           {/* Step 3 */}
-          <section id="readme-md" className="scroll-mt-16 mt-10 sm:mt-12">
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-purple-500/[0.1] text-xs font-medium text-purple-400/80 sm:h-7 sm:w-7">
-                3
-              </span>
-              <h2 className="text-base font-medium text-white/90 sm:text-lg">
-                Create README.md
-              </h2>
-            </div>
-            <p className="mt-3 text-sm text-white/40 sm:text-[0.9rem]">
-              The README.md is the human-readable description. It explains what the
-              skill does and who it&apos;s ideal for.
+          <section id="readme-md" className="scroll-mt-16 mt-12 sm:mt-14">
+            <StepHeader num={3} title="Create README.md" />
+            <p className="mt-4 text-sm text-gray-500 sm:text-[0.9rem]">
+              Human-readable description of the skill.
             </p>
-            <pre className="mt-3 rounded-lg border border-white/[0.06] bg-white/[0.02] p-3 font-mono text-xs leading-relaxed text-white/60 overflow-x-auto sm:p-4 sm:text-sm">
-              <code>{`# Solidity Developer
+            <CodeBlock>{`# Solidity Developer
 
-Skill template for blockchain developers specializing in
-Solidity and smart contract development on EVM-compatible chains.
+Skill template for smart contract development on EVM chains.
 
 ## What This Skill Does
 
-Equips your agent with deep knowledge of Solidity — from
-writing and testing contracts to gas optimization and
-security auditing.
+Equips your agent with Solidity expertise — writing,
+testing, gas optimization, and security auditing.
 
 ## Skills Covered
 
 - Solidity 0.8+, ERC-20/721/1155 token standards
 - Foundry and Hardhat tooling
 - Security patterns and static analysis
-- Gas optimization techniques
 
 ## Ideal For
 
-Builders focused on the smart contract layer on Monad
-and other EVM chains.
+Builders focused on the smart contract layer on Monad.
 
 ## Installation
 
-Copy this folder into your project's skills directory.`}</code>
-            </pre>
+Copy this folder into your project's skills directory.`}</CodeBlock>
           </section>
 
           {/* Tips */}
-          <section id="tips" className="scroll-mt-16 mt-10 sm:mt-12">
+          <section id="tips" className="scroll-mt-16 mt-12 sm:mt-14">
             <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/[0.06] text-xs font-medium text-white/50 sm:h-7 sm:w-7">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-500">
                 ?
               </span>
-              <h2 className="text-base font-medium text-white/90 sm:text-lg">Tips</h2>
+              <h2 className="text-[0.9rem] font-semibold text-gray-800 sm:text-base">Tips</h2>
             </div>
-            <ul className="mt-4 space-y-3 text-sm text-white/40 sm:text-[0.9rem]">
-              <li className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-white/20" />
-                The <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">description</code> field
-                is the most important — it determines when the agent loads your skill.
-              </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-white/20" />
-                Keep SKILL.md under 500 lines. Move reference material to a{" "}
-                <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">references/</code> subfolder.
-              </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-white/20" />
-                Keep the skills tag list to 4-8 items for best discoverability.
-              </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-white/20" />
-                Use lowercase names with hyphens only (e.g.,{" "}
-                <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">solidity-developer</code>).
-              </li>
-              <li className="flex gap-2">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-white/20" />
-                Add <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">scripts/</code> and{" "}
-                <code className="rounded bg-white/[0.06] px-1 py-0.5 text-xs text-purple-400/80">assets/</code> subfolders
-                for helper scripts and templates.
-              </li>
+            <ul className="mt-5 space-y-3.5 text-sm text-gray-500 sm:text-[0.9rem]">
+              {[
+                <>The <Code>description</Code> field determines when the agent loads your skill — make it specific.</>,
+                <>Keep SKILL.md under 500 lines. Heavy docs go in <Code>references/</Code>.</>,
+                <>4-8 skill tags for best discoverability.</>,
+                <>Lowercase names with hyphens: <Code>solidity-developer</Code>.</>,
+                <>Optional <Code>scripts/</Code> and <Code>assets/</Code> subfolders for helpers.</>,
+              ].map((text, i) => (
+                <li key={i} className="flex gap-2.5">
+                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-purple-300" />
+                  <span>{text}</span>
+                </li>
+              ))}
             </ul>
           </section>
 
-          <div className="h-8 sm:h-12" />
+          <div className="h-12 sm:h-16" />
         </article>
       </div>
 
-      {/* #5 Back to top button */}
+      {/* Back to top */}
       {showTop && (
         <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-30 flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.08] bg-[#1a1a2e]/95 text-white/40 shadow-lg backdrop-blur-md transition-all hover:border-purple-500/20 hover:text-purple-400"
-          title="Back to top"
+          onClick={() => document.getElementById("tutorial-scroll")?.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-6 right-6 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-lg transition-all hover:text-purple-500"
         >
-          <ArrowUp className="h-4 w-4" />
+          <ArrowUp className="h-3.5 w-3.5" />
         </button>
       )}
     </div>
+  );
+}
+
+function StepHeader({ num, title }: { num: number; title: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-600">
+        {num}
+      </span>
+      <h2 className="text-[0.9rem] font-semibold text-gray-800 sm:text-base">{title}</h2>
+    </div>
+  );
+}
+
+function CodeBlock({ children }: { children: string }) {
+  return (
+    <pre className="mt-4 rounded-xl border border-gray-100 bg-gray-50 p-4 font-mono text-xs leading-[1.7] text-gray-600 overflow-x-auto sm:p-5 sm:text-sm">
+      <code>{children}</code>
+    </pre>
+  );
+}
+
+function Code({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="rounded bg-purple-50 px-1.5 py-0.5 text-xs font-semibold text-purple-600">
+      {children}
+    </code>
   );
 }

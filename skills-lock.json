@@ -1,15 +1,60 @@
 {
   "version": 1,
   "skills": {
-    "frontend-design": {
-      "source": "anthropics/skills",
+    "adapt": {
+      "source": "pbakaus/impeccable",
       "sourceType": "github",
-      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+      "computedHash": "20b74ca9310c1339360b54916621f81abeac34576758bfffcd70062cfd1d73cd"
+    },
+    "animate": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "2fdb896e8c902ef8ca5bb30afdf2b7e4ad63afab0213323484e3c03e9e73324a"
+    },
+    "bolder": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "a64630cd78071ed2e051672dab19af6bbcdfa91bed495ed0acbdd57a3b799a26"
+    },
+    "clarify": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "028f83c9bbb870046cbb0e01df6c81b72cd5311b893f74db95d3c799a615277a"
+    },
+    "colorize": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "0f475462ac11fe51f8f216a67ad61aef05a09379ce5ab8681103d7a26316fe3a"
+    },
+    "critique": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "aea6ca15eaf917d3b70a23078a230d8bb2156f4bba3f6bdb6358d216fdc27567"
+    },
+    "extract": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "02321408deab942e102bd825d76c4cd6b5a5b0e6adb1060805327536995183f8"
+    },
+    "frontend-design": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "f5d6a5764f83b2de29070256dc45b7dc7fbcd43d7c888723907f9ec1e77dd181"
     },
     "frontend-developer-skill": {
       "source": "404kidwiz/claude-supercode-skills",
       "sourceType": "github",
       "computedHash": "634f7798d91fb9d350fccd4b91ae6138acfebf7dd2902ee4512582c6a40119a9"
+    },
+    "optimize": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "b14fdbcfdb033994ddac2ae5cde0277ec1d60d45fe5df1668a157158db814470"
+    },
+    "polish": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "computedHash": "da8dd0abb245cb01557d9bd8d7f4279296f0a5de786d33289dbcb962aa5aa657"
     }
   }
 }
