@@ -4,7 +4,7 @@ description: Deploy your Monad frontend on Vercel — environment variables, RPC
 category: Deployment & Infra
 topic: deployment
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
   - Vercel
   - Deployment
@@ -14,7 +14,7 @@ tags:
 
 ## Overview
 
-Vercel is the best platform for deploying Next.js Web3 frontends. This guide covers the setup for Monad dApps.
+Vercel is the standard platform for deploying Next.js Web3 frontends. This guide covers Monad-specific setup.
 
 ## 1. Push to GitHub
 
@@ -30,48 +30,55 @@ git push -u origin main
 
 1. Go to vercel.com/new
 2. Import your GitHub repository
-3. Vercel auto-detects Next.js — no build configuration needed
+3. Vercel auto-detects Next.js
 4. Click "Deploy"
 
 ## 3. Environment Variables
 
-Add these in Vercel Project Settings > Environment Variables:
+Set in Vercel Dashboard → Project Settings → Environment Variables:
 
-| Variable | Value | Description |
-|----------|-------|-------------|
-| `NEXT_PUBLIC_WC_PROJECT_ID` | `your_id` | WalletConnect project ID |
-| `NEXT_PUBLIC_MONAD_RPC_URL` | `https://rpc.testnet.monad.xyz` | Monad RPC endpoint |
-| `PRIVATE_KEY` | `0x...` | Server-side only — never expose to client |
+| Variable | Value | Exposed to Browser? |
+|----------|-------|---------------------|
+| `NEXT_PUBLIC_WC_PROJECT_ID` | WalletConnect ID | Yes |
+| `NEXT_PUBLIC_MONAD_RPC_URL` | `https://rpc.monad.xyz` | Yes |
+| `PRIVATE_KEY` | `0x...` | **No — server only** |
 
-**Important**: Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser. Never put private keys in public variables.
+**Rule:** `NEXT_PUBLIC_` prefix = visible in browser. Never put private keys in public variables.
 
-## 4. RPC Configuration for Production
+## 4. Production RPC Config
 
-Don't hardcode RPC URLs. Use environment variables:
+Use environment variables, not hardcoded URLs:
 
 ```typescript
 // lib/chains.ts
-export const monadTestnet = defineChain({
-  id: 10143,
-  name: 'Monad Testnet',
+import { defineChain } from 'viem'
+
+export const monadMainnet = defineChain({
+  id: 143,
+  name: 'Monad',
   nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
   rpcUrls: {
     default: {
-      http: [process.env.NEXT_PUBLIC_MONAD_RPC_URL || 'https://rpc.testnet.monad.xyz'],
+      http: [process.env.NEXT_PUBLIC_MONAD_RPC_URL || 'https://rpc.monad.xyz'],
     },
+  },
+  blockExplorers: {
+    default: { name: 'Monadscan', url: 'https://monadscan.com' },
   },
 })
 ```
 
-## 5. API Routes for Server-Side Operations
+## 5. Server-Side Operations
 
-Use Next.js API routes for operations that need private keys:
+Use Next.js API routes for anything needing private keys:
 
 ```typescript
 // app/api/mint/route.ts
 import { createWalletClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { monadTestnet } from '@/lib/chains'
+import { monadMainnet } from '@/lib/chains'
+
+const CONTRACT_ADDRESS = '0x...'
 
 export async function POST(req: Request) {
   const { to, amount } = await req.json()
@@ -79,7 +86,7 @@ export async function POST(req: Request) {
   const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`)
   const client = createWalletClient({
     account,
-    chain: monadTestnet,
+    chain: monadMainnet,
     transport: http(),
   })
 
@@ -87,7 +94,7 @@ export async function POST(req: Request) {
     address: CONTRACT_ADDRESS,
     abi: contractAbi,
     functionName: 'mint',
-    args: [to, amount],
+    args: [to, BigInt(amount)],
   })
 
   return Response.json({ hash })
@@ -96,9 +103,11 @@ export async function POST(req: Request) {
 
 ## 6. Production Checklist
 
-- Use environment variables for all configuration
-- Never expose private keys to the client
-- Set up a custom domain
-- Enable Vercel Analytics for monitoring
-- Use edge functions for low-latency API routes
-- Configure CORS if your API is accessed from other domains
+- [ ] Environment variables set for all configs
+- [ ] Private keys are server-side only (no `NEXT_PUBLIC_` prefix)
+- [ ] Custom domain configured
+- [ ] RPC URL uses environment variable (not hardcoded)
+- [ ] Error handling for failed transactions
+- [ ] Loading states while waiting for confirmations
+- [ ] Network switching UI (mainnet ↔ testnet)
+- [ ] Vercel Analytics enabled for monitoring

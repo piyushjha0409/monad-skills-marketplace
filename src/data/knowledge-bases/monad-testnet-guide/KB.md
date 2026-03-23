@@ -1,83 +1,152 @@
 ---
-name: Monad Testnet Setup Guide
-description: Complete guide to setting up Monad Testnet — RPC endpoints, chain ID, faucet, block explorer, and wallet configuration.
+name: Monad Network Setup Guide
+description: Complete network configuration for Monad Mainnet and Testnet — RPC endpoints, chain IDs, faucet, block explorers, and wallet setup.
 category: Monad Basics
-topic: testnet
+topic: network
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
+  - Mainnet
   - Testnet
   - RPC
   - Faucet
   - MetaMask
 ---
 
-## Network Information
+## Mainnet Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| **Network Name** | Monad Mainnet |
+| **Chain ID** | 143 |
+| **Currency Symbol** | MON |
+| **Version** | v0.13.1 / MONAD_NINE |
+
+### Mainnet RPC Endpoints
+
+| URL | Provider | Rate Limit | Batch Limit | Notes |
+|-----|----------|------------|-------------|-------|
+| `https://rpc.monad.xyz` | QuickNode | 25 rps | 100 | Primary |
+| `https://rpc1.monad.xyz` | Alchemy | 15 rps | 100 | debug_/trace_ disabled |
+| `https://rpc2.monad.xyz` | Goldsky Edge | 300/10s | 10 | Historical state supported |
+| `https://rpc3.monad.xyz` | Ankr | 300/10s | 10 | debug_ disabled |
+| `https://rpc-mainnet.monadinfra.com` | Monad Foundation | 20 rps | 1 | Historical state supported |
+
+WebSocket: Use `wss://` prefix on any of the above (e.g., `wss://rpc.monad.xyz`).
+
+### Mainnet Block Explorers
+
+- **MonadVision:** https://monadvision.com
+- **Monadscan:** https://monadscan.com
+- **Socialscan:** https://monad.socialscan.io
+- **Network Viz:** https://gmonads.com
+
+---
+
+## Testnet Configuration
 
 | Parameter | Value |
 |-----------|-------|
 | **Network Name** | Monad Testnet |
 | **Chain ID** | 10143 |
-| **RPC URL** | https://rpc.testnet.monad.xyz |
 | **Currency Symbol** | MON |
-| **Block Explorer** | https://explorer.testnet.monad.xyz |
+| **Faucet** | https://faucet.monad.xyz |
+| **App Hub** | https://testnet.monad.xyz |
 
-## Add Monad Testnet to MetaMask
+### Testnet RPC Endpoints
 
-1. Open MetaMask and click "Add Network"
-2. Click "Add a network manually"
-3. Enter the following:
-   - Network Name: `Monad Testnet`
-   - RPC URL: `https://rpc.testnet.monad.xyz`
-   - Chain ID: `10143`
-   - Currency Symbol: `MON`
-   - Block Explorer: `https://explorer.testnet.monad.xyz`
-4. Click "Save"
+| URL | Provider | Rate Limit |
+|-----|----------|------------|
+| `https://testnet-rpc.monad.xyz` | QuickNode | 50 rps |
+| `https://rpc.ankr.com/monad_testnet` | Ankr | 300/10s |
+| `https://rpc-testnet.monadinfra.com` | Monad Foundation | 20 rps |
 
-## Get Testnet Tokens
+WebSocket: `wss://testnet-rpc.monad.xyz` or `wss://rpc-testnet.monadinfra.com`
 
-Visit the Monad Faucet to claim free testnet MON tokens:
+### Testnet Block Explorers
 
-- You can claim tokens once every 12 hours
-- Tokens are for testing only and have no monetary value
-- Make sure your wallet is connected to Monad Testnet before claiming
+- **MonadVision:** https://testnet.monadvision.com
+- **Monadscan:** https://testnet.monadscan.com
+- **Socialscan:** https://monad-testnet.socialscan.io
 
-## Programmatic Chain Configuration
+---
 
-### For Viem/Wagmi:
+## Add to MetaMask
+
+### Mainnet
+1. Open MetaMask → Add Network → Add manually
+2. Network Name: `Monad Mainnet`
+3. RPC URL: `https://rpc.monad.xyz`
+4. Chain ID: `143`
+5. Currency: `MON`
+6. Explorer: `https://monadscan.com`
+
+### Testnet
+1. Network Name: `Monad Testnet`
+2. RPC URL: `https://testnet-rpc.monad.xyz`
+3. Chain ID: `10143`
+4. Currency: `MON`
+5. Explorer: `https://testnet.monadscan.com`
+
+---
+
+## Programmatic Chain Config
+
+### Viem / Wagmi
+
 ```typescript
 import { defineChain } from 'viem'
+
+export const monadMainnet = defineChain({
+  id: 143,
+  name: 'Monad Mainnet',
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.monad.xyz'] },
+  },
+  blockExplorers: {
+    default: { name: 'Monadscan', url: 'https://monadscan.com' },
+  },
+})
 
 export const monadTestnet = defineChain({
   id: 10143,
   name: 'Monad Testnet',
   nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://rpc.testnet.monad.xyz'] },
+    default: { http: ['https://testnet-rpc.monad.xyz'] },
   },
   blockExplorers: {
-    default: { name: 'Monad Explorer', url: 'https://explorer.testnet.monad.xyz' },
+    default: { name: 'Monadscan', url: 'https://testnet.monadscan.com' },
   },
 })
 ```
 
-### For Hardhat (hardhat.config.ts):
+### Foundry (foundry.toml)
+
+```toml
+[profile.default]
+eth-rpc-url = "https://rpc.monad.xyz"
+chain_id = 143
+
+[rpc_endpoints]
+monad_mainnet = "https://rpc.monad.xyz"
+monad_testnet = "https://testnet-rpc.monad.xyz"
+```
+
+### Hardhat (hardhat.config.ts)
+
 ```typescript
 networks: {
+  monadMainnet: {
+    url: "https://rpc.monad.xyz",
+    chainId: 143,
+    accounts: [process.env.PRIVATE_KEY!],
+  },
   monadTestnet: {
-    url: 'https://rpc.testnet.monad.xyz',
+    url: "https://testnet-rpc.monad.xyz",
     chainId: 10143,
     accounts: [process.env.PRIVATE_KEY!],
   },
 }
 ```
-
-### For Foundry (foundry.toml):
-```toml
-[rpc_endpoints]
-monad_testnet = "https://rpc.testnet.monad.xyz"
-```
-
-## Verifying Contracts
-
-Use the Monad block explorer for contract verification. Both Hardhat and Foundry verification plugins are supported.

@@ -1,10 +1,10 @@
 ---
 name: Why Build on Monad
-description: Understanding Monad's 10,000 TPS, 400ms blocks, EVM compatibility, and why it's the right chain for your hackathon project.
+description: Understanding Monad's 10,000 TPS, 400ms blocks, EVM compatibility, and why it's the right chain for your project.
 category: Monad Basics
 topic: blockchain
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
   - Monad
   - EVM
@@ -14,32 +14,7 @@ tags:
 
 ## What is Monad?
 
-Monad is a high-performance Ethereum-compatible Layer 1 blockchain built for speed without sacrificing decentralization. It delivers **10,000 transactions per second**, **400ms block times**, and **800ms finality** — all while maintaining full EVM bytecode compatibility.
-
-## Why Monad for Your Hackathon Project?
-
-### Performance That Changes What's Possible
-
-With 10,000 TPS and sub-second finality, Monad enables applications that simply can't exist on slower chains:
-
-- **Real-time DeFi** — Order books, prediction markets, and trading platforms that respond instantly
-- **On-chain gaming** — Multiplayer games with on-chain state that updates in real-time
-- **High-frequency operations** — Micro-transactions, streaming payments, and rapid settlement
-
-### Full EVM Compatibility
-
-Monad is **bytecode-compatible** with the EVM. This means:
-
-- Deploy your existing Solidity contracts without any code changes
-- Use the same tools you already know — Foundry, Hardhat, Remix
-- Import OpenZeppelin libraries, use Ethers.js/Viem, connect with MetaMask
-- Every Ethereum tutorial and resource applies directly to Monad
-
-### Developer Experience
-
-- **No new SDK required** — Standard Ethereum tools work out of the box
-- **Same addresses, same ABI** — Your contract addresses and interfaces are identical
-- **Familiar RPC** — Standard JSON-RPC endpoints, compatible with every Web3 library
+Monad is a high-performance Ethereum-compatible Layer 1 blockchain. It delivers **10,000 transactions per second**, **400ms block times**, and **800ms finality** while maintaining full EVM bytecode compatibility. Monad mainnet launched on November 24, 2025.
 
 ## Key Metrics
 
@@ -48,19 +23,58 @@ Monad is **bytecode-compatible** with the EVM. This means:
 | TPS | 10,000 | ~15 |
 | Block Time | 400ms | 12s |
 | Finality | 800ms | ~15min |
-| EVM Compatible | Yes (bytecode level) | Native |
+| EVM Compatible | Full bytecode level | Native |
 | Gas Token | MON | ETH |
+| Mainnet Chain ID | 143 | 1 |
+| Testnet Chain ID | 10143 | — |
+
+## Why Monad for Your Project?
+
+### Performance That Changes What's Possible
+
+- **Real-time DeFi** — Order books, prediction markets, and trading platforms that respond instantly
+- **On-chain gaming** — Multiplayer games with on-chain state that updates in real-time
+- **High-frequency operations** — Micro-transactions, streaming payments, and rapid settlement
+- **Sub-second UX** — Users see confirmations faster than a page load
+
+### Full EVM Compatibility
+
+Monad is **bytecode-compatible** with the EVM:
+
+- Deploy existing Solidity contracts without any code changes
+- Use the same tools — Foundry (Monad fork), Hardhat, Remix
+- Import OpenZeppelin libraries, use Viem/Ethers.js, connect with MetaMask
+- Every Ethereum tutorial applies directly to Monad
+
+### No New SDK Required
+
+Standard Ethereum tools work out of the box. Same addresses, same ABI, same JSON-RPC endpoints. If you know Ethereum development, you know Monad development.
+
+## Network Information
+
+### Mainnet
+
+- **Chain ID:** 143
+- **RPC:** `https://rpc.monad.xyz` (QuickNode, 25 rps)
+- **WebSocket:** `wss://rpc.monad.xyz`
+- **Block Explorers:**
+  - MonadVision: https://monadvision.com
+  - Monadscan: https://monadscan.com
+  - Socialscan: https://monad.socialscan.io
+
+### Testnet
+
+- **Chain ID:** 10143
+- **RPC:** `https://testnet-rpc.monad.xyz` (QuickNode, 50 rps)
+- **Faucet:** https://faucet.monad.xyz
+- **Block Explorers:**
+  - MonadVision: https://testnet.monadvision.com
+  - Monadscan: https://testnet.monadscan.com
 
 ## Getting Started
 
-1. **Set up your wallet** — Add Monad Testnet to MetaMask (Chain ID: 10143)
-2. **Get test tokens** — Use the Monad Faucet to get testnet MON
-3. **Deploy contracts** — Use Foundry or Hardhat with Monad RPC endpoint
-4. **Build your frontend** — Connect with RainbowKit/Wagmi, same as Ethereum
-
-## Resources
-
-- Monad Developer Documentation: docs.monad.xyz
-- Monad Testnet RPC: https://rpc.testnet.monad.xyz
-- Chain ID: 10143
-- Block Explorer: https://explorer.testnet.monad.xyz
+1. **Add Monad to MetaMask** — Chain ID 143 (mainnet) or 10143 (testnet)
+2. **Get test tokens** — Visit https://faucet.monad.xyz
+3. **Install Monad Foundry** — `curl -L https://foundry.category.xyz | bash && foundryup --network monad`
+4. **Deploy your first contract** — Use the Monad Foundry template
+5. **Build your frontend** — Connect with RainbowKit/Wagmi using Monad chain config

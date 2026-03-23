@@ -4,7 +4,7 @@ description: Set up Safe multisig wallets on Monad for team treasury management 
 category: Deployment & Infra
 topic: multisig
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
   - Safe
   - Multisig
@@ -14,21 +14,19 @@ tags:
 
 ## Why Multisig?
 
-For hackathon teams and production projects, a multisig wallet ensures:
+For hackathon teams and production projects:
 
-- **No single point of failure** — multiple team members must approve transactions
-- **Treasury security** — funds require N-of-M signatures to move
-- **Governance** — contract upgrades and admin operations need consensus
+- **No single point of failure** — multiple team members approve transactions
+- **Treasury security** — funds require N-of-M signatures
+- **Governance** — contract upgrades need consensus
 
 ## What is Safe?
 
-Safe (formerly Gnosis Safe) is the most widely used multisig wallet in the EVM ecosystem. It works on Monad because Monad is fully EVM-compatible.
+Safe (formerly Gnosis Safe) is the most widely used multisig in EVM ecosystems. It works on Monad because Monad is fully EVM-compatible.
 
-## Setting Up Safe on Monad
+## Setup with Safe SDK
 
-### 1. Deploy Safe Contracts
-
-Since Monad is EVM-compatible, you can deploy the Safe contracts using the official Safe deployment scripts or use the Safe SDK:
+### 1. Install
 
 ```bash
 npm install @safe-global/protocol-kit @safe-global/api-kit
@@ -40,7 +38,7 @@ npm install @safe-global/protocol-kit @safe-global/api-kit
 import Safe from '@safe-global/protocol-kit'
 
 const protocolKit = await Safe.init({
-  provider: 'https://rpc.testnet.monad.xyz',
+  provider: 'https://rpc.monad.xyz',  // Monad Mainnet
   signer: OWNER_PRIVATE_KEY,
   predictedSafe: {
     safeAccountConfig: {
@@ -57,6 +55,8 @@ const protocolKit = await Safe.init({
 const safeAddress = await protocolKit.getAddress()
 console.log('Safe address:', safeAddress)
 ```
+
+For testnet, use `provider: 'https://testnet-rpc.monad.xyz'`.
 
 ### 3. Propose a Transaction
 
@@ -85,12 +85,22 @@ const signedTx2 = await protocolKit2.signTransaction(signedTx)
 
 // Execute when threshold is met
 const result = await protocolKit.executeTransaction(signedTx2)
+console.log('TX hash:', result.hash)
 ```
 
-## Best Practices for Hackathon Teams
+On Monad, execution confirms in under a second.
 
-- **2-of-3 for small teams** — any 2 members can approve
-- **3-of-5 for larger teams** — majority consensus required
-- **Use for**: treasury management, contract upgrades, admin functions
-- **Store the Safe address** in your project's `.env` as the admin/owner
-- **Test on testnet first** — deploy and test the multisig flow before mainnet
+## Best Practices
+
+- **2-of-3** for small teams (any 2 can approve)
+- **3-of-5** for larger teams (majority consensus)
+- **Use for:** treasury, contract upgrades, admin functions, parameter changes
+- **Store Safe address** in `.env` as the contract admin/owner
+- **Test on testnet first** at `https://testnet-rpc.monad.xyz` (Chain ID: 10143)
+
+## Network Reference
+
+| Network | Chain ID | RPC | Faucet |
+|---------|----------|-----|--------|
+| Mainnet | 143 | `https://rpc.monad.xyz` | — |
+| Testnet | 10143 | `https://testnet-rpc.monad.xyz` | https://faucet.monad.xyz |

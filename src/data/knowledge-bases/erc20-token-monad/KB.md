@@ -1,10 +1,10 @@
 ---
 name: Deploy an ERC-20 Token on Monad
-description: Step-by-step guide to creating and deploying an ERC-20 token on Monad using OpenZeppelin and Foundry.
+description: Step-by-step guide to creating and deploying an ERC-20 token on Monad using OpenZeppelin and Monad Foundry.
 category: Smart Contracts
 topic: tokens
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
   - ERC-20
   - Token
@@ -14,9 +14,16 @@ tags:
 
 ## Overview
 
-This guide walks you through creating a standard ERC-20 token on Monad using OpenZeppelin contracts and deploying with Foundry.
+Create a standard ERC-20 token on Monad using OpenZeppelin contracts and deploy with Monad Foundry. This is a complete copy-paste guide.
 
-## 1. Set Up Your Project
+## 1. Install Monad Foundry
+
+```bash
+curl -L https://foundry.category.xyz | bash
+foundryup --network monad
+```
+
+## 2. Create Project
 
 ```bash
 forge init --template monad-developers/foundry-monad my-token
@@ -24,7 +31,19 @@ cd my-token
 forge install OpenZeppelin/openzeppelin-contracts
 ```
 
-## 2. Write the Token Contract
+Add remappings to `foundry.toml`:
+
+```toml
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+eth-rpc-url = "https://testnet-rpc.monad.xyz"
+chain_id = 10143
+remappings = ["@openzeppelin/=lib/openzeppelin-contracts/"]
+```
+
+## 3. Write the Token Contract
 
 ```solidity
 // src/MyToken.sol
@@ -49,10 +68,11 @@ contract MyToken is ERC20, Ownable {
 }
 ```
 
-## 3. Write Tests
+## 4. Write Tests
 
 ```solidity
 // test/MyToken.t.sol
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "forge-std/Test.sol";
@@ -60,7 +80,6 @@ import "../src/MyToken.sol";
 
 contract MyTokenTest is Test {
     MyToken public token;
-    address public owner = address(this);
 
     function setUp() public {
         token = new MyToken("My Token", "MTK", 1000000);
@@ -68,6 +87,10 @@ contract MyTokenTest is Test {
 
     function testInitialSupply() public view {
         assertEq(token.totalSupply(), 1000000 * 10 ** 18);
+    }
+
+    function testOwnerBalance() public view {
+        assertEq(token.balanceOf(address(this)), 1000000 * 10 ** 18);
     }
 
     function testMint() public {
@@ -83,29 +106,49 @@ Run tests:
 forge test
 ```
 
-## 4. Deploy to Monad Testnet
+## 5. Get Testnet MON
+
+Visit https://faucet.monad.xyz to claim testnet tokens.
+
+## 6. Deploy to Testnet
 
 ```bash
 forge create src/MyToken.sol:MyToken \
   --constructor-args "My Token" "MTK" 1000000 \
-  --rpc-url https://rpc.testnet.monad.xyz \
+  --rpc-url https://testnet-rpc.monad.xyz \
   --private-key $PRIVATE_KEY \
   --broadcast
 ```
 
-## 5. Verify on Explorer
+## 7. Deploy to Mainnet
+
+```bash
+forge create src/MyToken.sol:MyToken \
+  --constructor-args "My Token" "MTK" 1000000 \
+  --rpc-url https://rpc.monad.xyz \
+  --private-key $PRIVATE_KEY \
+  --broadcast
+```
+
+## 8. Verify
 
 ```bash
 forge verify-contract <CONTRACT_ADDRESS> src/MyToken.sol:MyToken \
   --constructor-args $(cast abi-encode "constructor(string,string,uint256)" "My Token" "MTK" 1000000) \
-  --chain-id 10143
+  --chain 10143 \
+  --verifier etherscan \
+  --etherscan-api-key $ETHERSCAN_API_KEY \
+  --watch
 ```
 
-## Extensions
+For mainnet, change `--chain 10143` to `--chain 143`.
 
-Add more features with OpenZeppelin:
+## OpenZeppelin Extensions
 
-- **Burnable**: `ERC20Burnable` — let holders burn their tokens
-- **Pausable**: `ERC20Pausable` — pause all transfers in emergencies
-- **Permit**: `ERC20Permit` — gasless approvals via signatures
-- **Votes**: `ERC20Votes` — governance voting power
+Add more features by inheriting:
+
+- **`ERC20Burnable`** — let holders burn tokens
+- **`ERC20Pausable`** — pause all transfers in emergencies
+- **`ERC20Permit`** — gasless approvals via EIP-2612 signatures
+- **`ERC20Votes`** — governance voting power tracking
+- **`ERC20Capped`** — enforce a maximum supply cap

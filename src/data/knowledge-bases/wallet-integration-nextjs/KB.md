@@ -1,10 +1,10 @@
 ---
 name: Wallet Integration with Next.js
-description: Connect wallets to your Next.js app on Monad — providers setup, chain configuration, and transaction handling.
+description: Connect wallets to your Next.js app on Monad — providers setup, chain configuration for mainnet and testnet, and transaction handling.
 category: Wallet & Frontend
 topic: wallets
 author: Piyush Jha
-version: "1.0.0"
+version: "1.1.0"
 tags:
   - Next.js
   - Wallet
@@ -14,7 +14,7 @@ tags:
 
 ## Overview
 
-This guide shows how to add wallet connection to a Next.js app targeting Monad, using Wagmi v2 and Viem.
+Add wallet connection to a Next.js app targeting Monad mainnet and testnet, using Wagmi v2 and Viem.
 
 ## 1. Install Dependencies
 
@@ -22,28 +22,33 @@ This guide shows how to add wallet connection to a Next.js app targeting Monad, 
 npm install wagmi viem @tanstack/react-query
 ```
 
-## 2. Define Monad Chain
+## 2. Define Monad Chains
 
 ```typescript
 // lib/chains.ts
 import { defineChain } from 'viem'
 
+export const monadMainnet = defineChain({
+  id: 143,
+  name: 'Monad',
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.monad.xyz'] },
+  },
+  blockExplorers: {
+    default: { name: 'Monadscan', url: 'https://monadscan.com' },
+  },
+})
+
 export const monadTestnet = defineChain({
   id: 10143,
   name: 'Monad Testnet',
-  nativeCurrency: {
-    name: 'MON',
-    symbol: 'MON',
-    decimals: 18,
-  },
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://rpc.testnet.monad.xyz'] },
+    default: { http: ['https://testnet-rpc.monad.xyz'] },
   },
   blockExplorers: {
-    default: {
-      name: 'Monad Explorer',
-      url: 'https://explorer.testnet.monad.xyz',
-    },
+    default: { name: 'Monadscan', url: 'https://testnet.monadscan.com' },
   },
 })
 ```
@@ -53,13 +58,14 @@ export const monadTestnet = defineChain({
 ```typescript
 // lib/wagmi.ts
 import { createConfig, http } from 'wagmi'
-import { monadTestnet } from './chains'
+import { monadMainnet, monadTestnet } from './chains'
 import { injected } from 'wagmi/connectors'
 
 export const config = createConfig({
-  chains: [monadTestnet],
+  chains: [monadMainnet, monadTestnet],
   connectors: [injected()],
   transports: {
+    [monadMainnet.id]: http(),
     [monadTestnet.id]: http(),
   },
 })
@@ -88,6 +94,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
+Wrap your root layout:
+
+```typescript
+// app/layout.tsx
+import { Providers } from './providers'
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}
+```
+
 ## 5. Connect Wallet Button
 
 ```typescript
@@ -96,7 +119,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 
 export function ConnectButton() {
-  const { address, isConnected } = useAccount()
+  const { address, isConnected, chain } = useAccount()
   const { connect, connectors } = useConnect()
   const { disconnect } = useDisconnect()
 
@@ -104,6 +127,7 @@ export function ConnectButton() {
     return (
       <div>
         <p>Connected: {address}</p>
+        <p>Network: {chain?.name} (ID: {chain?.id})</p>
         <button onClick={() => disconnect()}>Disconnect</button>
       </div>
     )
@@ -121,13 +145,14 @@ export function ConnectButton() {
 
 ```typescript
 import { useReadContract } from 'wagmi'
+import { erc20Abi } from 'viem'
 
-function TokenBalance() {
+function TokenBalance({ tokenAddress, userAddress }) {
   const { data: balance } = useReadContract({
-    address: '0x...',
+    address: tokenAddress,
     abi: erc20Abi,
     functionName: 'balanceOf',
-    args: ['0x...'],
+    args: [userAddress],
   })
 
   return <p>Balance: {balance?.toString()}</p>
@@ -137,22 +162,29 @@ function TokenBalance() {
 ## 7. Send Transactions
 
 ```typescript
-import { useWriteContract } from 'wagmi'
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 
-function MintButton() {
-  const { writeContract } = useWriteContract()
+function MintButton({ contractAddress, abi }) {
+  const { writeContract, data: hash } = useWriteContract()
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash })
 
   return (
-    <button onClick={() =>
-      writeContract({
-        address: '0x...',
-        abi: contractAbi,
-        functionName: 'mint',
-        args: [100n],
-      })
-    }>
-      Mint
-    </button>
+    <div>
+      <button
+        onClick={() => writeContract({
+          address: contractAddress,
+          abi,
+          functionName: 'mint',
+          args: [100n * 10n ** 18n],
+        })}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Confirming...' : 'Mint 100 Tokens'}
+      </button>
+      {isSuccess && <p>Confirmed! TX: {hash}</p>}
+    </div>
   )
 }
 ```
+
+On Monad, `useWaitForTransactionReceipt` resolves in under a second due to 800ms finality.
