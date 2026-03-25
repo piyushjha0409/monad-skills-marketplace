@@ -27,10 +27,10 @@ export function HeroSection() {
       <div className="relative mx-auto flex w-full max-w-2xl flex-col items-center px-5 py-12 text-center sm:px-8 sm:py-16 lg:max-w-3xl">
         {/* Heading */}
         <h1 className="text-[1.75rem] font-bold leading-[1.15] tracking-[-0.03em] text-gray-900 sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem]">
-          Find the right skills for{" "}
+          Find the right knowledge for{" "}
           <br className="hidden sm:block" />
           your agent to{" "}
-          <span className="text-purple-600">build on Monad</span>
+          <span className="text-purple-600">build on Hackathons</span>
         </h1>
 
         {/* Subtitle */}
