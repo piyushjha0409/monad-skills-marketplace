@@ -5,6 +5,8 @@ import Link from "next/link";
 import { type SkillProfile } from "@/lib/skills";
 import { DIFFICULTY_CONFIG } from "@/lib/constants";
 import { Download, FolderOpen, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 import { downloadSkillZip } from "@/lib/download";
 import { CopyCommand } from "@/components/shared/copy-command";
@@ -129,8 +131,10 @@ export function SkillCard({ profile }: { profile: SkillProfile }) {
       {/* Preview panel */}
       {expanded && (
         <div className="border-t border-gray-200 p-4 sm:p-5">
-          <div className="max-h-72 overflow-auto rounded-lg bg-gray-50 p-3 text-sm leading-[1.7] text-gray-600 sm:p-4">
-            <RenderedMarkdown content={profile.body} />
+          <div className="max-h-80 overflow-auto rounded-lg bg-gray-50 p-4 sm:p-5">
+            <div className="prose prose-sm prose-gray max-w-none overflow-hidden prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-white prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none prose-pre:overflow-x-auto prose-pre:bg-white prose-pre:border prose-pre:border-gray-200">
+              <Markdown remarkPlugins={[remarkGfm]}>{profile.body}</Markdown>
+            </div>
           </div>
           <div className="mt-3">
             <p className="mb-1.5 text-[11px] font-semibold text-gray-500">Install</p>
@@ -140,17 +144,4 @@ export function SkillCard({ profile }: { profile: SkillProfile }) {
       )}
     </div>
   );
-}
-
-function RenderedMarkdown({ content }: { content: string }) {
-  const html = content
-    .replace(/^### (.+)$/gm, '<h4 class="mt-4 mb-1 text-xs font-bold uppercase tracking-wide text-gray-800">$1</h4>')
-    .replace(/^## (.+)$/gm, '<h3 class="mt-5 mb-1.5 text-sm font-bold text-gray-800">$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-700">$1</strong>')
-    .replace(/^- (.+)$/gm, '<li class="flex gap-2 items-start"><span class="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-purple-400"></span><span>$1</span></li>')
-    .replace(/((?:<li[^]*?<\/li>\n?)+)/g, '<ul class="space-y-1.5 text-[0.8rem]">$1</ul>')
-    .replace(/^(?!<[hul]|$)(.+)$/gm, '<p class="text-[0.8rem]">$1</p>')
-    .replace(/\n{2,}/g, "\n");
-
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
 }

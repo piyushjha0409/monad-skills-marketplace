@@ -76,9 +76,17 @@ export function KBDetailContent({ kb }: { kb: KnowledgeBase }) {
               {kb.meta.description}
             </p>
 
-            {/* Rendered article */}
-            <div className="mt-8 prose prose-sm prose-gray max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200 prose-th:text-gray-700 prose-td:text-gray-600">
-              <Markdown remarkPlugins={[remarkGfm]}>{kb.body}</Markdown>
+            {/* KB.md — rendered as a file document */}
+            <div className="mt-8 rounded-xl border border-gray-200 overflow-hidden">
+              <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2.5">
+                <BookOpen className="h-4 w-4 text-purple-400" />
+                <span className="text-sm font-medium text-gray-700">KB.md</span>
+              </div>
+              <div className="p-5 sm:p-6">
+                <div className="prose prose-sm prose-gray max-w-none overflow-hidden prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none prose-pre:overflow-x-auto prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200 prose-th:text-gray-700 prose-td:text-gray-600">
+                  <Markdown remarkPlugins={[remarkGfm]}>{kb.body}</Markdown>
+                </div>
+              </div>
             </div>
           </div>
 

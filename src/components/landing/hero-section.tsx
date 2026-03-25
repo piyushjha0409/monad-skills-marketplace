@@ -25,11 +25,6 @@ export function HeroSection() {
       </div>
 
       <div className="relative mx-auto flex w-full max-w-2xl flex-col items-center px-5 py-12 text-center sm:px-8 sm:py-16 lg:max-w-3xl">
-        {/* Badge */}
-        <span className="mb-8 rounded-full border border-purple-200 bg-purple-50 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-purple-600 sm:mb-10 sm:text-xs">
-          Blitz Hackathon 2026
-        </span>
-
         {/* Heading */}
         <h1 className="text-[1.75rem] font-bold leading-[1.15] tracking-[-0.03em] text-gray-900 sm:text-[2.5rem] md:text-[3rem] lg:text-[3.5rem]">
           Find the right skills for{" "}

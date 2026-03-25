@@ -26,11 +26,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8 lg:max-w-4xl">
-        <Link href="/" className="group flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-600 transition-colors group-hover:bg-purple-500">
-            <span className="text-xs font-bold text-white">M</span>
-          </div>
-          <span className="text-sm font-bold text-gray-900 transition-colors group-hover:text-purple-600">Monad Skills</span>
+        <Link href="/" className="group flex items-center gap-1.5">
+          <span className="text-lg">⚡️</span>
+          <span className="text-sm font-bold text-gray-900 transition-colors group-hover:text-purple-600">BlitzSkills</span>
         </Link>
 
         {/* Desktop nav */}

@@ -60,21 +60,32 @@ export function SkillDetailContent({ profile }: { profile: SkillProfile }) {
               {profile.meta.description}
             </p>
 
-            {/* README content */}
+            {/* README.md — rendered as a proper README document */}
             {profile.readmeMd && (
-              <div className="mt-8">
-                <h2 className="mb-4 text-lg font-semibold text-gray-900">About</h2>
-                <div className="prose prose-sm prose-gray max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none">
-                  <Markdown remarkPlugins={[remarkGfm]}>{profile.readmeMd}</Markdown>
+              <div className="mt-8 rounded-xl border border-gray-200 overflow-hidden">
+                <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2.5">
+                  <FileText className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm font-medium text-gray-700">README.md</span>
+                </div>
+                <div className="p-5 sm:p-6">
+                  <div className="prose prose-sm prose-gray max-w-none overflow-hidden prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none prose-pre:overflow-x-auto prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200">
+                    <Markdown remarkPlugins={[remarkGfm]}>{profile.readmeMd}</Markdown>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Agent Instructions */}
-            <div className="mt-8 rounded-xl border border-gray-200 bg-gray-50/50 p-5 sm:p-6">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">Agent Instructions</h2>
-              <div className="prose prose-sm prose-gray max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-white prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none">
-                <Markdown remarkPlugins={[remarkGfm]}>{profile.body}</Markdown>
+            {/* SKILL.md — rendered as a proper file document */}
+            <div className="mt-6 rounded-xl border border-gray-200 overflow-hidden">
+              <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-2.5">
+                <FileText className="h-4 w-4 text-purple-400" />
+                <span className="text-sm font-medium text-gray-700">SKILL.md</span>
+                <span className="ml-auto text-[10px] text-gray-400">Agent Instructions</span>
+              </div>
+              <div className="p-5 sm:p-6">
+                <div className="prose prose-sm prose-gray max-w-none overflow-hidden prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-700 prose-code:rounded prose-code:bg-purple-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:text-purple-600 prose-code:font-semibold prose-code:before:content-none prose-code:after:content-none prose-pre:overflow-x-auto prose-pre:bg-gray-50 prose-pre:border prose-pre:border-gray-200">
+                  <Markdown remarkPlugins={[remarkGfm]}>{profile.body}</Markdown>
+                </div>
               </div>
             </div>
           </div>
